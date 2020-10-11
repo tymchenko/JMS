@@ -10,18 +10,22 @@ import javax.jms.*;
 @Local
 public class Producer {
 
-	@Resource(name="java:jboss/DefaultJMSConnectionFactory")
+	@Resource(mappedName="java:/JmsXA")
 	private ConnectionFactory connectionFactory;
 
-	@Resource(name="java:/queue/test")
-	private Destination destination;
+	@Resource(lookup="java:/jms/queue/ExpiryQueue")
+	private Queue queue;
+
+	private Connection connection;
 
 	@Schedule(hour="*", minute = "*", second = "*/5", persistent = false)
 	public void produceMessage() {
 		try {
-			Connection connection = connectionFactory.createConnection();
+			connection = connectionFactory.createConnection();
 			Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			MessageProducer messageProducer = session.createProducer(destination);
+			MessageProducer messageProducer = session.createProducer(queue);
+
+			connection.start();
 
 			messageProducer.send(session.createTextMessage("Hello MDB"));
 			System.out.println("--------------------------------------");

@@ -8,7 +8,7 @@ import javax.jms.TextMessage;
 
 @MessageDriven(name="ConsumerFirst",
 	activationConfig = {
-		@ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/queue/test")
+		@ActivationConfigProperty(propertyName = "destination", propertyValue = "java:/jms/queue/ExpiryQueue")
 	})
 public class ConsumerFirst implements MessageListener {
 
